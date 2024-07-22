@@ -110,9 +110,16 @@
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
 
-        // Replace with your Azure Function URL
-        const AZURE_FUNCTION_URL = 'https://medical-azure.azurewebsites.net/api/HttpTrigger1?';
+          let AZURE_FUNCTION_URL = '';
 
+        
+        fetch('config.json')
+            .then(response => response.json())
+            .then(config => {
+                AZURE_FUNCTION_URL = config.AZURE_FUNCTION_URL;
+            })
+            .catch(error => console.error('Error loading configuration:', error));
+        
         function addMessage(message, isUser) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
