@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main  # or your default branch name
 
 jobs:
   deploy:
@@ -11,9 +11,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Create config file
-      run: |
-        echo '${{ secrets.CONFIG_JSON }}' > config.json
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install replace-in-file
+
+    - name: Replace placeholder with Azure Function URL
+      run: npx replace-in-file '__AZURE_FUNCTION_URL__' '${{ secrets.AZURE_FUNCTION_URL }}' index.html
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
