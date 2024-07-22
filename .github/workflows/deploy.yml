@@ -9,14 +9,31 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Debug Git
+      run: |
+        git config --list
+        git status
+        ls -la
 
     - name: Create config file
       run: |
         echo '${{ secrets.CONFIG_JSON }}' > config.json
+        ls -la
+        cat config.json
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: .
+
+    - name: Debug after deploy
+      if: failure()
+      run: |
+        git status
+        ls -la
