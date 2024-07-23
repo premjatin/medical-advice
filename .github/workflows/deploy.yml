@@ -3,24 +3,18 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # or your default branch name
+      - main 
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-
-    - name: Install dependencies
-      run: npm install replace-in-file
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Replace placeholder with Azure Function URL
-      run: npx replace-in-file '__AZURE_FUNCTION_URL__' '${{ secrets.AZURE_FUNCTION_URL }}' index.html
+      run: |
+        sed -i 's|##AZURE_FUNCTION_URL##|${{ secrets.AZURE_FUNCTION_URL }}|g' index.html
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
